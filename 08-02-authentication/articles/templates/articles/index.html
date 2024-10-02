@@ -6,17 +6,31 @@
   <title>Document</title>
 </head>
 <body>
-  <p>안녕하세요 {{ user.username }}</p>
+
 
   <h1>Articles</h1>
-  <a href="{% url "accounts:login" %}">LOGIN</a>
 
+  {% comment %} request.user 쓸 수 있는 이유는 settings.py의 templ {% endcomment %}
+  {% if request.user.is_authenticated %}
+  <p>안녕하세요 {{ user.username }}</p>
+  <a href="{% url "articles:create" %}">CREATE</a>
   <form action="{% url "accounts:logout" %}" method="POST">
     {% csrf_token %}
     <input type="submit" value="LOGOUT">
   </form>
+  <form action="{% url "accounts:delete" %}"method="POST">
+    {% csrf_token %}
+    <input type="submit" value="회원탈퇴">
+  </form>
+  <a href="{% url "accounst:update" %}">회원정보 수정</a>
+
   
-  <a href="{% url "articles:create" %}">CREATE</a>
+  {% else %}
+  <a href="{% url "accounts:login" %}">LOGIN</a>
+  <a href="{% url "accounts:signup" %}">회원가입</a>
+
+  {% endif %}
+
   {% for article in articles %}
     <p>글 번호: {{ article.pk }}</p>
     <a href="{% url "articles:detail" article.pk %}">
